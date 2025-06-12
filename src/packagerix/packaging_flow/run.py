@@ -129,14 +129,10 @@ def package_project(output_dir=None, project_url=None):
                 # Evaluation error - continue inner loop
                 coordinator_message(f"{candidate_result.error.type} (attempt {eval_iteration}/{max_inner_attempts}), retrying...")
                 eval_iteration += 1
-                candidate_result = best_result
-                candidate_code = best_code
             elif candidate_result.error.type == NixErrorKind.HASH_MISMATCH:
                 # Evaluation error - continue inner loop
                 coordinator_message(f"{candidate_result.error.type} (attempt {eval_iteration}/{max_inner_attempts}), retrying...")
                 eval_iteration += 1
-                best_result = candidate_result
-                candidate_code = best_code
             elif candidate_result.error.type == NixErrorKind.BUILD_ERROR:
                 break
             if eval_iteration > max_inner_attempts:
