@@ -76,7 +76,7 @@ def invoke_build() -> NixBuildResult:
 
 def get_tail_of_log(s : str) -> str:
     lines = s.split('\n')
-    return '\n'.join(lines[-500:])
+    return '\n'.join(lines[-50:])
 
 
 # read build log of previous step and this step
