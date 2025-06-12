@@ -112,13 +112,13 @@ def package_project(output_dir=None, project_url=None):
             coordinator_progress(f"Iteration {build_iteration}: Testing fix attempt {eval_iteration}/{max_inner_attempts}...")
             prev_candidate_error_type = candidate_result.error.type
             candidate_result = execute_build_and_add_to_stack(candidate_code)
-            coordinator_progress(f"Nix build result: {candidate_result.error.type}")
             
             if candidate_result.success:
                 coordinator_message(f"✅ Build succeeded after {build_iteration} iterations!")
                 if output_dir:
                     save_package_output(candidate_code, project_url, output_dir)
                 return candidate_code
+            coordinator_message(f"Nix build result: {candidate_result.error.type}")
             
             # Build still failed - check if we made progress or hit eval error
             if candidate_result.error.type == NixErrorKind.EVAL_ERROR:
@@ -133,7 +133,7 @@ def package_project(output_dir=None, project_url=None):
                 eval_iteration += 1
                 best_result = candidate_result
                 candidate_code = best_code
-            elif candidate_result.error.type != NixErrorKind.BUILD_ERROR:
+            elif candidate_result.error.type == NixErrorKind.BUILD_ERROR:
                 break
             if eval_iteration > max_inner_attempts:
                 coordinator_error("Failed to make progress within {max_inner_attempts} attempts.")
@@ -143,10 +143,13 @@ def package_project(output_dir=None, project_url=None):
 
         eval_result = eval_progress(best_result, candidate_result)
         if eval_result == NixBuildErrorDiff.PROGRESS:
+            coordinator_message(f"Build iteration {build_iteration} made progress...")
             best_result = candidate_result
             best_code = candidate_code
             build_iteration += 1
             eval_iteration = 1
+        else:
+            coordinator_message(f"Build iteration {build_iteration} did NOT made progress...")
 
         if build_iteration > 45:
             coordinator_error("Reached temporary build iteration limit.")

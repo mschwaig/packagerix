@@ -10,27 +10,25 @@ from packagerix.errors import NixError, NixErrorKind, NixBuildErrorDiff
 
 @ask_model("""@model You are software packaging expert who can build any project using the Nix programming language.
 
-Read the contents of the project's GitHub page and fill out all of the sections in the code template that are marked with ... .
-Do not make any other modifications. Do not modify lib.fakeHash.
-
-Your goal is to make the build progress further, but without adding any unnecessary configuration or dependencies.
+Your task is to read the contents of the project's GitHub page and fill out all of the sections in the code template that are marked with ... .
+Do not make any other modifications or additions. Do not modify the included lib.fakeHash.
 
 This is the code template you have to fill out:
-
 ```nix
 {code_template}
 ```   
 
 Here is the information form the project's GitHub page:
-
 ```text
 {project_page}
 ```
 
 And some relevant metadata of the latest release:
+```
 {release_data}
+```
 
-Note: your reply should contain exaclty one code block with the updated Nix code.
+Note: Your reply should contain exactly one code block with the updated Nix code.
 Note: Even though the provided themplate uses the mkDerivation function, this is not the appropriate way to package software for most software ecosystems (outside of C/C++).
       Make sure you base your code on an appropriate function provdied by nixpkgs instead.
 
@@ -76,7 +74,7 @@ Error:
 {error}
 ```
            
-Note: your reply should contain exaclty one code block with the updated Nix code.
+Note: Your reply should contain exactly one code block with the updated Nix code.
 Note: If you need to introduce a new hash, use lib.fakeHash as a placeholder, and automated process will replace this with the actual hash.
 """)
 def fix_build_error(code: str, error: str) -> StreamedStr:
@@ -86,7 +84,7 @@ def fix_build_error(code: str, error: str) -> StreamedStr:
 
 @ask_model_enum("""@model You are software packaging expert who can build any project using the Nix programming language.
 
- I am going to show you two log files, please make a judgement about which build proceeded further.
+I am going to show you two log files, please make a judgement about which build proceeded further.
 
 Initial build:
 ```nix
@@ -116,7 +114,7 @@ Error:
 {error}
 ```
            
-Note: your reply should contain exaclty one code block with the updated Nix code.
+Note: Your reply should contain exactly one code block with the updated Nix code.
 """)
 def fix_hash_mismatch(code: str, error: str) -> StreamedStr:
     ...
