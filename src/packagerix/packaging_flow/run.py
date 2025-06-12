@@ -151,7 +151,7 @@ def package_project(output_dir=None, project_url=None):
         else:
             coordinator_message(f"Build iteration {build_iteration} did NOT made progress...")
 
-        if build_iteration > 45:
+        if build_iteration > 15:
             coordinator_error("Reached temporary build iteration limit.")
             return None
 
